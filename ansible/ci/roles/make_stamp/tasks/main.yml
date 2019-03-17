@@ -1,0 +1,13 @@
+---
+
+  - name: 'Create timestamp'
+    command: 'date +"%Y%m%d%H%M%S"'
+    register: 'date_output'
+
+  - name: 'Read timestamp'
+    set_fact:
+      release_date: '{{ date_output.stdout }}'
+      
+  - name: 'Print timestamp'
+    debug:
+      msg: '{{ release_date }}'

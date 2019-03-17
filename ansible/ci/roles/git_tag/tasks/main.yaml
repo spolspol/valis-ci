@@ -1,0 +1,27 @@
+---
+
+  - name: 'Configure git'
+    shell: |
+      git config --global user.email ""
+      git config --global push.default simple
+
+  - name: 'Set git tag'
+    set_fact:
+      deploy_git_tag: '{{ release_namespace }}-{{ release_project_sanitized }}-{{ release_version }}-{{ release_date }}'
+
+  - name: 'Print git tag'
+    debug:
+      msg: '{{ deploy_git_tag }}'
+
+  - name: 'Tag git repo'
+    shell: |
+      git commit -a -m "[valis-ci] Released {{ release_project_sanitized }} version {{ release_version }} to {{ release_namespace }}"
+      git tag -f {{ deploy_git_tag }}
+      git push --tags
+    args:
+      chdir: '{{ working_directory }}/'
+    register: 'infra_tag_output'
+  
+  - name: 'Print git stdout'
+    debug:
+      msg: '{{ infra_tag_output.stdout_lines }}'

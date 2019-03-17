@@ -1,0 +1,12 @@
+{
+
+  "aws_region": "eu-west-1",
+
+  "run_roles": [
+   	"pre_install",
+    "common_steps",
+    "make_stamp",
+  	"notify_slack"
+  ]
+
+}

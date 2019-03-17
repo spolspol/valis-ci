@@ -1,0 +1,71 @@
+image: gitlabci-builder-image
+
+variables:
+  CI_DEBUG_TRACE:       'false'     # enable for more verbose job run ouput
+  PLATFORM:             'platform'
+  GIT_STRATEGY:         'clone'
+  ci_cmd: 'ansible-playbook -c local -i "localhost," --extra-vars ${job_json} --extra-vars "@ansible/inventory/${namespace}.json" -e "${extra_vars}" ${playbook}'
+
+stages:
+  - inventory
+  - terraform
+  - helm
+  - notify
+  - clear
+
+notify_on_failure:
+  stage: notify
+  when: on_failure
+  variables:
+    playbook:       'ansible/ci/main.yml'
+    job_json:       '@ansible/jobs/notify_slack.json'
+    extra_vars:     'release_namespace=${namespace}'
+  environment:
+    name:           '$namespace'
+  script:
+    - ansible-playbook -c local -i "localhost," --extra-vars ${job_json} --extra-vars "${extra_vars}" ${playbook}
+
+# Stack
+#######################
+
+stack_inventory_set:
+  stage:  inventory
+  only:
+   - master
+  variables:
+    namespace:    'platform-stack-99'
+    playbook:     'ansible/ci/main.yml'
+    job_json:     '@ansible/jobs/inventory_set.json'
+    extra_vars:   'release_namespace=${namespace}'
+  environment:
+    name:         '$namespace'
+  script:
+    - '(eval "$ci_cmd")'
+
+stack_terraform_apply:
+  stage:  terraform
+  only:
+   - master
+  variables:
+    namespace:    'platform-stack-99'
+    playbook:     'ansible/ci/main.yml'
+    job_json:     '@ansible/jobs/terraform_apply.json'
+    extra_vars:   'release_namespace=${namespace}'
+  environment:
+    name:         '$namespace'
+  script:
+    - '(eval "$ci_cmd")'
+
+stack_helm_release:
+  stage:  helm
+  only:
+   - master
+  variables:
+    namespace:    'platform-stack-99'
+    playbook:     'ansible/ci/main.yml'
+    job_json:     '@ansible/jobs/helm_release.json'
+    extra_vars:   'release_namespace=${namespace}'
+  environment:
+    name:         '$namespace'
+  script:
+    - '(eval "$ci_cmd")'

@@ -1,0 +1,16 @@
+---
+
+  - name: 'helm upgrade'
+    shell: |
+      helm upgrade -f values.yaml {{ release_namespace }} .
+    args:
+      chdir: '{{ working_directory }}/charts/'
+    register: 'helm_output'
+
+  - name: 'Print helm stdout'
+    debug:
+      msg: '{{ helm_output.stdout_lines }}'
+
+  - name: 'Print helm stderr'
+    debug:
+      msg: '{{ helm_output.stderr_lines }}'

@@ -1,0 +1,35 @@
+---
+
+  - name: 'Fetch deployment parameters from AWS Parameter Store'
+    set_fact:
+      deploy_parameters: '{{ lookup("aws_ssm", "{{ aws_ssm_path }}", region="eu-west-1", shortnames=true, bypath=true, recursive=true) }}'
+
+  - name: 'Print AWS SSM deployment parameters'
+    debug:
+      msg: '{{ deploy_parameters }}'
+
+  - name: 'Set terraform s3 backend'
+    template:
+      src: 'backend_s3.tf.template'
+      dest: '{{ terraform_dir }}/stacks/{{ release_project }}/backend_s3.tf'
+      force: true 
+    vars:
+      terraform_state: '{{ terraform_state }}'
+
+  - debug: msg="the value of backend_s3.tf is {{lookup('file', '{{ terraform_dir }}/stacks/{{ release_project }}/backend_s3.tf') }}"
+
+  - name: 'terraform apply'
+    terraform:
+      project_path: '{{ terraform_dir }}/stacks/{{ release_project }}' 
+      variables: '{{ deploy_parameters }}'
+      force_init: true
+      state: present
+    register: 'terraform_output'
+
+  - name: 'Print terraform stdout'
+    debug:
+      msg: '{{ terraform_output.stdout }}'
+
+  - name: 'Print terraform outputs'
+    debug:
+      msg: '{{ terraform_output.outputs }}'

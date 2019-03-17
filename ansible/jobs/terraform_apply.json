@@ -1,0 +1,17 @@
+{
+
+  "terraform_dir": "{{ working_directory }}/terraform/stacks",
+
+  "aws_region": "eu-west-1",
+
+  "release_project": "platform",
+  "release_version": "latest",
+
+  "run_roles": [
+   	"pre_install",
+    "common_steps",
+    "make_stamp",
+    "run_terraform"
+  ]
+
+}

@@ -1,0 +1,8 @@
+
+terraform {
+  backend "s3" {
+    bucket = "{{ terraform_state.bucket }}"
+    key    = "{{ terraform_state.key }}"
+    region = "{{ terraform_state.region }}"
+  }
+}

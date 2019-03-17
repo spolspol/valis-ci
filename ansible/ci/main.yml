@@ -1,0 +1,23 @@
+  - hosts: all
+
+    vars:
+      terraform_dir":     '{{ working_directory }}/terraform/stacks'
+      terraform_bucket:   'valis-ci-terraform-state'
+      working_directory:  '/tmp/valis-ci'
+      secure_dir:         '{{ working_directory }}/ansible_auth'
+      slack:
+        token:    'x/y/x'
+        channel:  '#valis-ci'
+        username: 'valis-ci'
+
+    roles:
+      - { role: pre_install, when: '"pre_install" in run_roles' }
+      - { role: common_steps, when: '"common" in run_roles' }
+      - { role: make_stamp, when: '"stamp" in run_roles' }
+      - { role: inventory_ssm, when: '"inventory_ssm" in run_roles' }
+      - { role: update_version, when: '"update_version" in run_roles' }
+      - { role: render_config, when: '"render_config" in run_roles' }
+      - { role: run_terraform, when: '"run_terraform" in run_roles' }
+      - { role: run_helm, when: '"run_helm" in run_roles' }
+      - { role: git_tag, when: '"git_tag" in run_roles' }
+      - { role: notify_slack, when: '"notify_slack" in run_roles' }

@@ -1,0 +1,71 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+logstash:
+  enabled: true
+  exporter:
+    logstash:
+      enabled: false
+  persistence:
+    enabled: false
+    heapOptions: "-Xm1024M -Xmx1024M"
+  resources:
+    limits:
+      cpu: 2
+      memory: 1280Mi
+    requests:
+      cpu: 250m
+      memory: 1024Mi
+  elasticsearch:
+    host: elasticsearch
+    port: 9200
+  patterns:
+    # main: |-
+    #   TESTING {"foo":.*}$
+    ## NOTE: To achieve multiple pipelines with this chart, current best practice
+    ## is to maintain one pipeline per chart release. In this way configuration is
+    ## simplified and pipelines are more isolated from one another.
+  inputs:
+  filters:
+    # main: |-
+    #   filter {
+    #   }
+  outputs:
+
+
+oauth2-proxy:
+  enabled: true
+  config:
+    clientID:           {{ deploy_parameters.cognito_app_client_id }}
+    clientSecret:       {{ deploy_parameters.cognito_app_client_secret }}
+    cookieSecret:       {{ deploy_parameters.cognito_app_client_cookie_salt }}
+    configFile:         ""
+  extraArgs:
+    provider:           odic
+    email-domain:       "*"
+    upstream:           "file:///dev/null"
+    http-address:       "0.0.0.0:4180"
+    oidc-issuer-url:    {{ deploy_parameters.cognito_oidc_issuer }}
+    set-xauthrequest:   true
+  authenticatedEmailsFile:
+    enabled: false
+  service:
+    type:             ClusterIP
+    port:             80
+  ingress:
+    enabled: true
+    path: /oauth2/
+    hosts:
+      - auth.{{ deploy_parameters.public_domain_name }}
+      - {{ deploy_parameters.public_domain_name }}
+    annotations:
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+      nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+      nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+  resources:
+    limits:
+      cpu: 2
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 256Mi

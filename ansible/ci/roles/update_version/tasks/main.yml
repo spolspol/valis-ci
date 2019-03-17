@@ -1,0 +1,10 @@
+---
+
+  - name: 'Update project release version in AWS Parameter Store'
+    aws_ssm_parameter_store:
+      region: '{{ aws_region }}'
+      name: '{{ aws_ssm_path }}/{{ release_project_sanitized }}_ver'
+      value: '{{ release_version }}'
+  
+  - name: 'Lookup release version set in parameter store'
+    debug: msg="{{ lookup('aws_ssm', '{{ aws_ssm_path }}/{{ release_project_sanitized }}_ver', region='eu-west-1' ) }}"

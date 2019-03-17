@@ -1,0 +1,17 @@
+---
+
+  - name: 'Fetch deployment parameters from AWS Parameter Store'
+    set_fact:
+      deploy_parameters: '{{ lookup("aws_ssm", "{{ aws_ssm_path }}", region="eu-west-1", shortnames=true, bypath=true, recursive=true) }}'
+
+  - name: 'Print AWS SSM deployment parameters'
+    debug:
+      msg: '{{ deploy_parameters }}'
+
+  - name: 'Render values.yaml from template'
+    template:
+      src: 'values.yaml.template'
+      dest: '{{ working_directory }}/helm/charts/stable/values.yaml'
+      force: true 
+    vars:
+      deploy_parameters: "{{ deploy_parameters }}"

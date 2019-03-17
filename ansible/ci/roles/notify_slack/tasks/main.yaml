@@ -1,0 +1,11 @@
+---
+
+  - name: 'Send on-failure notification message via Slack'
+    slack:
+      token: '{{ slack.token }}'
+      color: 'danger'
+      msg: '[ FAILED ] | [ JOB_ID #{{ ansible_env.CI_JOB_ID }} ] | [ PROJECT: *{{ release_project }}* ]  | URL: [ {{ ansible_env.CI_PIPELINE_URL }} ]'
+      channel: '{{ slack.channel }}'
+      username: '{{ slack.username }}'
+      icon_url: 'https://cdn-images-1.medium.com/max/1200/0*AF4RZHDC2SLHhyJK.png'
+      link_names: 0

@@ -1,0 +1,25 @@
+xx{  
+
+    "terraform_state": {
+        "scheme": "s3",
+        "region": "eu-west-1",
+        "bucket": "",
+        "key": "platform-stack-01.tfstate"
+    },
+
+    "helm_subcharts": [
+        "logstash"
+    ],
+
+    "parameters_inventory": [
+    { 
+        "name": "platform",  
+        "tier": "stack",
+        "sequence": "01",
+        "k8s_namespace": "platform-stack-01", 
+        "k8s_nginx_ingress_whitelist": "0.0.0.0/0"
+        "private_domain_name": "01.stack.platform.local", 
+        "public_domain_name": "endpoints.example.com", 
+    }
+  ]
+}

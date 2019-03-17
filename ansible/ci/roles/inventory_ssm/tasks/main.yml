@@ -1,0 +1,8 @@
+---
+
+  - name: 'Push configuration inventory to parameter store'
+    aws_ssm_parameter_store:
+      region: '{{ aws_region }}'  
+      name: '{{ aws_ssm_path }}/{{ item.key }}'
+      value: '{{ item.value }}'
+    with_dict: '{{ parameters_inventory }}'
