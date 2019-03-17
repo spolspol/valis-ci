@@ -16,6 +16,10 @@ Simple **automation framework**, to manage CI/CD style release pipline of micro-
 - CI pipeline hands over to _kubernetes_ API via deployment through helm _release_.
 - Release target is a _namespace_, understood as collection of micro-services, running atop of _kubernetes_ cluster.
 
+## Diagrams
+
+![Valis CI pipeline diagram](diagrams/valis-ci_pipeline.png?raw=true "Valis CI pipeline")
+
 ### Build With:
 
 #### [**Ansible**](https://www.ansible.com/)
