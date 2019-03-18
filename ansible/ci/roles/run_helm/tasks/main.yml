@@ -1,16 +1,19 @@
 ---
 
-  - name: 'helm upgrade'
-    shell: |
-      helm upgrade -f values.yaml {{ release_namespace }} .
-    args:
-      chdir: '{{ working_directory }}/charts/'
+  - name: 'Install helm charts'
+    helm:
+      chart:
+        name: '{{ item.chart }}'
+        version: '{{ item.version }}'
+        source:
+          type: '{{ item.type }}'
+          location: '{{ item.location }}'
+      state: installed
+      name: '{{ item.name }}'
+      namespace: '{{ release_namespace }}'
+    with_items: '{{ helm_charts }}'
     register: 'helm_output'
 
-  - name: 'Print helm stdout'
+  - name: 'Print helm output'
     debug:
-      msg: '{{ helm_output.stdout_lines }}'
-
-  - name: 'Print helm stderr'
-    debug:
-      msg: '{{ helm_output.stderr_lines }}'
+      msg: '{{ helm_output }}'

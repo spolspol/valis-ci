@@ -7,9 +7,22 @@
         "key": "platform-stack-01.tfstate"
     },
 
-    "helm_subcharts": [
-        "logstash"
-    ],
+  "helm_charts": [
+    {
+      "name": "logstash",
+      "chart": "logstash",
+      "version": "1.5.2",
+      "type": "repo",
+      "location": "https://kubernetes-charts.storage.googleapis.com"
+    },
+    {
+      "name": "oath2_proxy",
+      "chart": "oath2_proxy",
+      "version": "0.10.0",
+      "type": "repo",
+      "location": "https://kubernetes-charts.storage.googleapis.com"
+    }
+  ]
 
     "parameters_inventory": [
     { 
